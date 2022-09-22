@@ -29,7 +29,7 @@ def index(request):
 
         # print(result['access_token'])
         # token_azure_ad = result['access_token']
-        pic_url,data = url_pic(request,"All")
+        pic_url,data = url_pic(request,"Wait")
         # data = data_request("All")
         return render(request, 'auth/inbox.html', {'pic_url' : pic_url,'all_data' : data})
 
@@ -51,8 +51,8 @@ def history(request):
 
     #     all_Request = testRequest.objects.all()
     #     status_test= all_Request.filter(docStatus__startswith='a' ) | all_Request.filter(docStatus__startswith='r' )
-        pic_url,data = url_pic(request,"All")
-        return render(request, 'auth/history.html',{'pic_url' : pic_url})
+        pic_url,data = url_pic(request,"A_C")
+        return render(request, 'auth/history.html',{'pic_url' : pic_url,'all_data' : data})
     else:
         # print('index page')
         return redirect('sign_in')
@@ -102,6 +102,14 @@ def url_pic(request,status):
         elif status.startswith("Cancel"):
             for i in result_api["data"]:
                 if i["docStatus"] == "Cancel":
+                    data_use.append(i)
+        elif status.startswith("Wait") :
+            for i in result_api["data"]:
+                if i["docStatus"] == "WaitForApprove":
+                    data_use.append(i)
+        elif status.startswith("A_C") :
+            for i in result_api["data"]:
+                if i["docStatus"] == "Complete" or  i["docStatus"] == "Cancel":
                     data_use.append(i)
     
         if result1['employeeId'] == None:
